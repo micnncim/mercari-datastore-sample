@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -19,7 +18,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	ctx := context.Background()
+	ctx := r.Context()
 	c, err := datastore.NewClient(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -32,7 +31,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func ListUsers(w http.ResponseWriter, r *http.Request) {
-	ctx := context.Background()
+	ctx := r.Context()
 	c, err := datastore.NewClient(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -56,7 +55,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	ctx := context.Background()
+	ctx := r.Context()
 	c, err := datastore.NewClient(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -80,7 +79,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	ctx := context.Background()
+	ctx := r.Context()
 	c, err := datastore.NewClient(ctx)
 	if err != nil {
 		log.Fatal(err)
