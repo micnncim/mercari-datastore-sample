@@ -19,7 +19,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	ctx := r.Context()
-	c, err := datastore.NewClient(ctx)
+	c, err := datastore.FromContext(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,7 +32,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 func ListUsers(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	c, err := datastore.NewClient(ctx)
+	c, err := datastore.FromContext(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,7 +56,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	ctx := r.Context()
-	c, err := datastore.NewClient(ctx)
+	c, err := datastore.FromContext(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -80,7 +80,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	ctx := r.Context()
-	c, err := datastore.NewClient(ctx)
+	c, err := datastore.FromContext(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
