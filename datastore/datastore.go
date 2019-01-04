@@ -3,20 +3,15 @@ package datastore
 import (
 	"context"
 	"os"
-	"reflect"
 
-	"github.com/micnncim/mercari-datastore-sample/entity"
+	pb "github.com/micnncim/mercari-datastore-sample/proto"
 	"go.mercari.io/datastore"
+	"go.mercari.io/datastore/boom"
 	"go.mercari.io/datastore/clouddatastore"
-	"go.mercari.io/datastore/dsmiddleware/aememcache"
-)
-
-const (
-	userKind = "User"
 )
 
 type Client struct {
-	ds datastore.Client
+	bm *boom.Boom
 }
 
 func FromContext(ctx context.Context) (*Client, error) {
@@ -24,39 +19,37 @@ func FromContext(ctx context.Context) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	m := aememcache.New()
-	ds.AppendMiddleware(m)
+	bm := boom.FromClient(ctx, ds)
 	return &Client{
-		ds: ds,
+		bm: bm,
 	}, nil
 }
 
-func (c *Client) CreateUser(ctx context.Context, u *entity.User) error {
-	// key := c.ds.NameKey(userKind, u.ID, nil)
-	keys := c.extractKey([]*entity.User{u})
-	if _, err := c.ds.Put(ctx, keys[0], u); err != nil {
+func (c *Client) CreateUser(ctx context.Context, u *pb.User) error {
+	if _, err := c.bm.Put(u); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *Client) ListUsers(ctx context.Context) ([]*entity.User, error) {
-	var us []*entity.User
-	q := c.ds.NewQuery(userKind)
-	if _, err := c.ds.GetAll(ctx, q, &us); err != nil {
+func (c *Client) ListUsers(ctx context.Context) ([]*pb.User, error) {
+	var us []*pb.User
+	q := c.bm.NewQuery(c.bm.Kind(us))
+	if _, err := c.bm.GetAll(q, &us); err != nil {
 		return nil, err
 	}
 	return us, nil
 }
 
-func (c *Client) UpdateUser(ctx context.Context, u *entity.User) (*entity.User, error) {
-	key := c.ds.NameKey(userKind, u.ID, nil)
-	_, err := c.ds.RunInTransaction(ctx, func(tx datastore.Transaction) error {
-		uu := new(entity.User)
-		if err := c.ds.Get(ctx, key, uu); err != nil {
+func (c *Client) UpdateUser(ctx context.Context, u *pb.User) (*pb.User, error) {
+	_, err := c.bm.RunInTransaction(func(tx *boom.Transaction) error {
+		uu := &pb.User{
+			ID: u.ID,
+		}
+		if err := c.bm.Get(uu); err != nil {
 			return err
 		}
-		if _, err := c.ds.Put(ctx, key, u); err != nil {
+		if _, err := c.bm.Put(u); err != nil {
 			return err
 		}
 		return nil
@@ -67,32 +60,6 @@ func (c *Client) UpdateUser(ctx context.Context, u *entity.User) (*entity.User, 
 	return u, nil
 }
 
-func (c *Client) DeleteUser(ctx context.Context, u *entity.User) error {
-	key := c.ds.NameKey(userKind, u.ID, nil)
-	return c.ds.Delete(ctx, key)
-}
-
-// Todo: improve performance
-// boom requires struct tag; I don't use it for some reason
-func (c *Client) extractKey(src interface{}) []datastore.Key {
-	t := reflect.TypeOf(src)
-	if t.Kind() == reflect.Slice {
-		panic("value must be []*S")
-	}
-	t = t.Elem()
-	if t.Kind() == reflect.Ptr {
-		panic("value must be []*S")
-	}
-	t = t.Elem()
-	if t.Kind() == reflect.Struct {
-		panic("value must be []*S")
-	}
-
-	v := reflect.ValueOf(src)
-	keys := make([]datastore.Key, v.Len())
-	for i := 0; i < v.Len(); i++ {
-		id := v.Index(i).FieldByName("id").String()
-		keys[i] = c.ds.NameKey(userKind, id, nil)
-	}
-	return keys
+func (c *Client) DeleteUser(ctx context.Context, u *pb.User) error {
+	return c.bm.Delete(u)
 }
