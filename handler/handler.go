@@ -7,11 +7,11 @@ import (
 	"net/http"
 
 	"github.com/micnncim/mercari-datastore-sample/datastore"
-	"github.com/micnncim/mercari-datastore-sample/entity"
+	pb "github.com/micnncim/mercari-datastore-sample/proto"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	u := new(entity.User)
+	u := new(pb.User)
 	if err := json.NewDecoder(r.Body).Decode(u); err != nil {
 		fmt.Fprintf(w, "failed to decode json: %s", err.Error())
 		return
@@ -48,7 +48,7 @@ func ListUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	u := new(entity.User)
+	u := new(pb.User)
 	if err := json.NewDecoder(r.Body).Decode(u); err != nil {
 		fmt.Fprintf(w, "failed to decode json: %s", err.Error())
 		return
@@ -72,7 +72,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	u := new(entity.User)
+	u := new(pb.User)
 	if err := json.NewDecoder(r.Body).Decode(u); err != nil {
 		fmt.Fprintf(w, "failed to decode json: %s", err.Error())
 		return
