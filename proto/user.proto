@@ -5,7 +5,7 @@ package proto;
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 message User {
-    string id = 1 [(gogoproto.moretags) = "boom:\"id\"", (gogoproto.customname)="ID"];
-    string name = 2;
-    string _kind = 3 [(gogoproto.jsontag) = "-", (gogoproto.moretags) = "boom:\"kind\"", (gogoproto.customname)="_kind"];
+    string _kind = 1 [(gogoproto.jsontag) = "-", (gogoproto.moretags) = "boom:\"kind\"", (gogoproto.customname)="_kind"];
+    string id = 2 [(gogoproto.moretags) = "boom:\"id\"", (gogoproto.customname)="ID"];
+    string name = 3;
 }
