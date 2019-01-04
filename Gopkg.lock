@@ -25,6 +25,18 @@
   version = "v3.3.3"
 
 [[projects]]
+  digest = "1:a9c85389dbd301c97a3499fe15a2b65b505b5f0cb0f1120dea59f1f3d6b11d96"
+  name = "github.com/gogo/protobuf"
+  packages = [
+    "gogoproto",
+    "proto",
+    "protoc-gen-gogo/descriptor",
+  ]
+  pruneopts = "UT"
+  revision = "4cbf7e384e768b4e01799441fdf2a706a5635ae7"
+  version = "v1.2.0"
+
+[[projects]]
   digest = "1:c6892ebe33775a89a6da197bafd468682bb8350b4ae235aed42fa531d3a9f3ca"
   name = "github.com/golang/protobuf"
   packages = [
@@ -53,10 +65,11 @@
   version = "v2.0.3"
 
 [[projects]]
-  digest = "1:0272dbad9e2c9fe986aa4827199378fff37e0ce709f12386318491773ec04bdc"
+  digest = "1:ab192c7c56b0ba886b3a823d1385448e5c1fc7e8a9040775910ae79a352c4fe3"
   name = "go.mercari.io/datastore"
   packages = [
     ".",
+    "boom",
     "clouddatastore",
     "internal",
     "internal/c/atomiccache",
@@ -247,7 +260,10 @@
   analyzer-version = 1
   input-imports = [
     "github.com/go-chi/chi",
+    "github.com/gogo/protobuf/gogoproto",
+    "github.com/gogo/protobuf/proto",
     "go.mercari.io/datastore",
+    "go.mercari.io/datastore/boom",
     "go.mercari.io/datastore/clouddatastore",
   ]
   solver-name = "gps-cdcl"
